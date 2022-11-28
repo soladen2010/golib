@@ -28,7 +28,7 @@ func Reduce[T1, T2 any](s []T1, initializer T2, f func(T2, T1) T2) T2 {
 	return r
 }
 
-// Filter 使用过滤函数过滤切片中的数据 。
+// Filter 使用过滤函数过滤切片中的数据。hahaha
 // 该函数返回新的切片，只会保留调用 f 返回 true 的元素。
 func Filter[T any](s []T, f func(T) bool) []T {
 	var r []T
