@@ -1,4 +1,4 @@
-package slices
+package github.com/soladen2010/golib/slices
 
 // ForEach 对slice的每个元素执行action函数。
 func ForEach[T interface{}](slice []T, action func(T)) {
