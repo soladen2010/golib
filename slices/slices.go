@@ -1,5 +1,38 @@
 package slices
 
+// FindAll 在slice中搜索所有符合条件（condition函数返回true）的元素
+func FindAll[T interface{}](slice []T, contdition func(T) bool) []T {
+	result := []T{}
+	for _, item := range slice {
+		if contdition(item) {
+			result = append(result, item)
+		}
+	}
+	return result
+}
+
+// FindFirst 在slice中搜索第一个符合条件（condition函数返回true）的元素
+func FindFirst[T interface{}](slice []T, contdition func(T) bool) T {
+	for _, item := range slice {
+		if contdition(item) {
+			return item
+		}
+	}
+	var t T
+	return t
+}
+
+// FindLast 在slice中搜索最后一个符合条件（condition函数返回true）的元素
+func FindLast[T interface{}](slice []T, contdition func(T) bool) T {
+	for i := len(slice) - 1; i >= 0; i-- {
+		if contdition(slice[i]) {
+			return slice[i]
+		}
+	}
+	var t T
+	return t
+}
+
 // ForEach 对slice的每个元素执行action函数。
 func ForEach[T interface{}](slice []T, action func(T)) {
 	for _, item := range slice {
