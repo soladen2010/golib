@@ -34,14 +34,14 @@ func FindLast[T interface{}](slice []T, contdition func(T) bool) T {
 }
 
 // ForEach 对slice中的每个元素执行action函数，适用于读取slice场景。
-func ForEach[T interface{}](slice []T, action func(T)) {
+func ForEach[T interface{}](slice []T, action func(e T)) {
 	for i := 0; i < len(slice); i++ {
 		action(slice[i])
 	}
 }
 
 // ForEachPointer 对slice中的每个元素，通过其指针执行action函数，适用于改写slice场景。
-func ForEachPt[T interface{}](slice []T, action func(*T)) {
+func ForEachPt[T interface{}](slice []T, action func(e *T)) {
 	for i := 0; i < len(slice); i++ {
 		action(&slice[i])
 	}
