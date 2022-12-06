@@ -63,20 +63,17 @@ func ForEachParal[T interface{}](slice []T, n int, action func(e T)) {
 
 	// 初始化token池
 	token := make(chan bool, n)
-	for i := 0; i < n; i++ {
-		token <- true
-	}
-	// 执行action，每次执行时先取令牌，执行完后放回令牌
+	// 执行action，每次执行时先占用token，执行完后释放
 	for i := 0; i < len(slice); i++ {
 		go func(index int) {
-			<-token
-			action(slice[index])
 			token <- true
+			action(slice[index])
+			<-token
 		}(i)
 	}
 	// 收回token，确保所有协程都已完成
 	for i := 0; i < n; i++ {
-		<-token
+		token <- true
 	}
 }
 
@@ -96,20 +93,17 @@ func ForEachPtParal[T interface{}](slice []T, n int, action func(e *T)) {
 
 	// 初始化token池
 	token := make(chan bool, n)
-	for i := 0; i < n; i++ {
-		token <- true
-	}
-	// 执行action，每次执行时先取令牌，执行完后放回令牌
+	// 执行action，每次执行时先占用token，执行完后释放
 	for i := 0; i < len(slice); i++ {
 		go func(index int) {
-			<-token
-			action(&slice[index])
 			token <- true
+			action(&slice[index])
+			<-token
 		}(i)
 	}
 	// 收回token，确保所有协程都已完成
 	for i := 0; i < n; i++ {
-		<-token
+		token <- true
 	}
 }
 
@@ -137,20 +131,17 @@ func MapParal[T1 interface{}, T2 interface{}](slice []T1, n int, mapper func(T1)
 
 	// 初始化token池
 	token := make(chan bool, n)
-	for i := 0; i < n; i++ {
-		token <- true
-	}
-	// 执行action，每次执行时先取令牌，执行完后放回令牌
+	// 执行action，每次执行时先占用token，执行完后释放
 	for i := 0; i < len(slice); i++ {
 		go func(index int) {
-			<-token
-			mapped[index] = mapper(slice[index])
 			token <- true
+			mapped[index] = mapper(slice[index])
+			<-token
 		}(i)
 	}
 	// 收回token，确保所有协程都已完成
 	for i := 0; i < n; i++ {
-		<-token
+		token <- true
 	}
 
 	return mapped
