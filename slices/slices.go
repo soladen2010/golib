@@ -47,6 +47,72 @@ func ForEachPt[T interface{}](slice []T, action func(e *T)) {
 	}
 }
 
+// ForEachParal 对slice中的每个元素多线程并行执行action函数，适用于读取slice场景。
+// 参数n为并行协程数
+func ForEachParal[T interface{}](slice []T, n int, action func(e T)) {
+	if len(slice) <= 0 {
+		return
+	}
+	if n <= 0 {
+		n = 1 //若n设置错误，默认单线程执行
+	} else {
+		if n > len(slice) {
+			n = len(slice) //若n小于slice的长度，则取n为slice的长度
+		}
+	}
+
+	// 初始化token池
+	token := make(chan bool, n)
+	for i := 0; i < n; i++ {
+		token <- true
+	}
+	// 执行action，每次执行时先取令牌，执行完后放回令牌
+	for i := 0; i < len(slice); i++ {
+		go func(index int) {
+			<-token
+			action(slice[index])
+			token <- true
+		}(i)
+	}
+	// 收回token，确保所有协程都已完成
+	for i := 0; i < n; i++ {
+		<-token
+	}
+}
+
+// ForEachPtParal 对slice中的每个元素，通过其指针多线程并行执行action函数，适用于改写slice场景。
+// 参数n为并行协程数
+func ForEachPtParal[T interface{}](slice []T, n int, action func(e *T)) {
+	if len(slice) <= 0 {
+		return
+	}
+	if n <= 0 {
+		n = 1 //若n设置错误，默认单线程执行
+	} else {
+		if n > len(slice) {
+			n = len(slice) //若n小于slice的长度，则取n为slice的长度
+		}
+	}
+
+	// 初始化token池
+	token := make(chan bool, n)
+	for i := 0; i < n; i++ {
+		token <- true
+	}
+	// 执行action，每次执行时先取令牌，执行完后放回令牌
+	for i := 0; i < len(slice); i++ {
+		go func(index int) {
+			<-token
+			action(&slice[index])
+			token <- true
+		}(i)
+	}
+	// 收回token，确保所有协程都已完成
+	for i := 0; i < n; i++ {
+		<-token
+	}
+}
+
 // Map 使用映射函数将 []T1 转换成 []T2。
 // This function has two type parameters, T1 and T2.
 // 映射函数 f 接受两个类型类型 T1 和 T2。
