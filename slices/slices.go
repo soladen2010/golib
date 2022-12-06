@@ -114,14 +114,45 @@ func ForEachPtParal[T interface{}](slice []T, n int, action func(e *T)) {
 }
 
 // Map 使用映射函数将 []T1 转换成 []T2。
-// This function has two type parameters, T1 and T2.
 // 映射函数 f 接受两个类型类型 T1 和 T2。
-// 本函数可以处理所有类型的切片数据。
 func Map[T1 interface{}, T2 interface{}](slice []T1, mapper func(T1) T2) []T2 {
-	mapped := make([]T2, 0, len(slice))
-	for _, item := range slice {
-		mapped = append(mapped, mapper(item))
+	mapped := make([]T2, len(slice))
+	for i := 0; i < len(slice); i++ {
+		mapped[i] = mapper(slice[i])
 	}
+	return mapped
+}
+
+// MapParal 多线程并行使用映射函数将 []T1 转换成 []T2。
+// 映射函数 f 接受两个类型类型 T1 和 T2。
+func MapParal[T1 interface{}, T2 interface{}](slice []T1, n int, mapper func(T1) T2) []T2 {
+	if n <= 0 {
+		n = 1 //若n设置错误，默认单线程执行
+	} else {
+		if n > len(slice) {
+			n = len(slice) //若n小于slice的长度，则取n为slice的长度
+		}
+	}
+	mapped := make([]T2, len(slice))
+
+	// 初始化token池
+	token := make(chan bool, n)
+	for i := 0; i < n; i++ {
+		token <- true
+	}
+	// 执行action，每次执行时先取令牌，执行完后放回令牌
+	for i := 0; i < len(slice); i++ {
+		go func(index int) {
+			<-token
+			mapped[index] = mapper(slice[index])
+			token <- true
+		}(i)
+	}
+	// 收回token，确保所有协程都已完成
+	for i := 0; i < n; i++ {
+		<-token
+	}
+
 	return mapped
 }
 
