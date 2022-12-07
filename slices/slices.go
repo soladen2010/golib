@@ -75,6 +75,7 @@ func ForEachParal[T interface{}](slice []T, n int, action func(e T)) {
 	for i := 0; i < n; i++ {
 		token <- true
 	}
+	close(token)
 }
 
 // ForEachPtParal 对slice中的每个元素，通过其指针多线程并行执行action函数，适用于改写slice场景。
@@ -105,6 +106,7 @@ func ForEachPtParal[T interface{}](slice []T, n int, action func(e *T)) {
 	for i := 0; i < n; i++ {
 		token <- true
 	}
+	close(token)
 }
 
 // Map 使用映射函数将 []T1 转换成 []T2。
@@ -143,7 +145,7 @@ func MapParal[T1 interface{}, T2 interface{}](slice []T1, n int, mapper func(T1)
 	for i := 0; i < n; i++ {
 		token <- true
 	}
-
+	close(token)
 	return mapped
 }
 
