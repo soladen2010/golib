@@ -63,6 +63,7 @@ func ForEachParal[T interface{}](slice []T, n int, action func(e T)) {
 
 	// 初始化token池
 	token := make(chan bool, n)
+	defer close(token)
 	// 执行action，每次执行时先占用token，执行完后释放
 	for i := 0; i < len(slice); i++ {
 		go func(index int) {
@@ -75,7 +76,6 @@ func ForEachParal[T interface{}](slice []T, n int, action func(e T)) {
 	for i := 0; i < n; i++ {
 		token <- true
 	}
-	close(token)
 }
 
 // ForEachPtParal 对slice中的每个元素，通过其指针多线程并行执行action函数，适用于改写slice场景。
@@ -94,6 +94,7 @@ func ForEachPtParal[T interface{}](slice []T, n int, action func(e *T)) {
 
 	// 初始化token池
 	token := make(chan bool, n)
+	defer close(token)
 	// 执行action，每次执行时先占用token，执行完后释放
 	for i := 0; i < len(slice); i++ {
 		go func(index int) {
@@ -106,7 +107,6 @@ func ForEachPtParal[T interface{}](slice []T, n int, action func(e *T)) {
 	for i := 0; i < n; i++ {
 		token <- true
 	}
-	close(token)
 }
 
 // Map 使用映射函数将 []T1 转换成 []T2。
@@ -133,6 +133,7 @@ func MapParal[T1 interface{}, T2 interface{}](slice []T1, n int, mapper func(T1)
 
 	// 初始化token池
 	token := make(chan bool, n)
+	defer close(token)
 	// 执行action，每次执行时先占用token，执行完后释放
 	for i := 0; i < len(slice); i++ {
 		go func(index int) {
@@ -145,7 +146,6 @@ func MapParal[T1 interface{}, T2 interface{}](slice []T1, n int, mapper func(T1)
 	for i := 0; i < n; i++ {
 		token <- true
 	}
-	close(token)
 	return mapped
 }
 
