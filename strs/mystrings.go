@@ -25,3 +25,16 @@ func Reverse(s string) string {
 		return s
 	}
 }
+
+// TrimMultiSpace by xp, get rid of all spaces
+func TrimMultiSpace(s string) (r string) {
+	t := s
+	for {
+		r = strings.Trim(t, " ")
+		if t == r {
+			return
+		} else {
+			t = r
+		}
+	}
+}
