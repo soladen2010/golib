@@ -66,8 +66,8 @@ func ForEachParal[T interface{}](slice []T, n int, action func(e T)) {
 	defer close(token)
 	// 执行action，每次执行时先占用token，执行完后释放
 	for i := 0; i < len(slice); i++ {
+		token <- true
 		go func(index int) {
-			token <- true
 			action(slice[index])
 			<-token
 		}(i)
@@ -97,8 +97,8 @@ func ForEachPtParal[T interface{}](slice []T, n int, action func(e *T)) {
 	defer close(token)
 	// 执行action，每次执行时先占用token，执行完后释放
 	for i := 0; i < len(slice); i++ {
+		token <- true
 		go func(index int) {
-			token <- true
 			action(&slice[index])
 			<-token
 		}(i)
@@ -136,8 +136,8 @@ func MapParal[T1 interface{}, T2 interface{}](slice []T1, n int, mapper func(T1)
 	defer close(token)
 	// 执行action，每次执行时先占用token，执行完后释放
 	for i := 0; i < len(slice); i++ {
+		token <- true
 		go func(index int) {
-			token <- true
 			mapped[index] = mapper(slice[index])
 			<-token
 		}(i)
