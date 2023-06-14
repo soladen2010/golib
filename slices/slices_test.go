@@ -67,3 +67,28 @@ func TestGroupCount(t *testing.T) {
 	countMap := GroupCount(arr)
 	fmt.Println(countMap)
 }
+
+func TestFindLast(t *testing.T) {
+	arr := []User{{id: 1, name: "tom"}, {id: 2, name: "jack"}, {id: 3, name: "marry"}, {id: 2, name: "jackNew"}}
+	last := FindLast(arr, func(e User) bool {
+		return e.id == 2
+	})
+	fmt.Println(last)
+}
+
+func TestFindAll(t *testing.T) {
+	arr := []User{{id: 1, name: "tom"}, {id: 2, name: "jack"}, {id: 3, name: "marry"}, {id: 2, name: "jackNew"}}
+	all := FindAll(arr, func(e User) bool {
+		return e.id == 2
+	})
+	fmt.Println(all)
+}
+
+// create a test function for FindFirst
+func TestFindFirst(t *testing.T) {
+	arr := []User{{id: 1, name: "tom"}, {id: 2, name: "jack"}, {id: 3, name: "marry"}, {id: 2, name: "jackNew"}}
+	first := FindFirst(arr, func(e User) bool {
+		return e.id == 2
+	})
+	fmt.Println(first)
+}
