@@ -34,53 +34,15 @@ func FindLast[T interface{}](slice []T, contdition func(T) bool) T {
 }
 
 // ForEach 对slice中的每个元素执行action函数，适用于读取slice场景。
-func ForEach[T interface{}](slice []T, action func(e T)) {
+func ForEach[T interface{}](slice []T, action func(e *T)) {
 	for i := 0; i < len(slice); i++ {
-		action(slice[i])
-	}
-}
-
-// ForEachPointer 对slice中的每个元素，通过其指针执行action函数，适用于改写slice场景。
-func ForEachPt[T interface{}](slice []T, action func(e *T)) {
-	for i := 0; i < len(slice); i++ {
-		action(&slice[i])
+		action(&(slice[i]))
 	}
 }
 
 // ForEachParal 对slice中的每个元素多线程并行执行action函数，适用于读取slice场景。
 // 参数n为并行协程数
-func ForEachParal[T interface{}](slice []T, n int, action func(e T)) {
-	if len(slice) <= 0 {
-		return
-	}
-	if n <= 0 {
-		n = 1 //若n设置错误，默认单线程执行
-	} else {
-		if n > len(slice) {
-			n = len(slice) //若n小于slice的长度，则取n为slice的长度
-		}
-	}
-
-	// 初始化token池
-	token := make(chan bool, n)
-	defer close(token)
-	// 执行action，每次执行时先占用token，执行完后释放
-	for i := 0; i < len(slice); i++ {
-		token <- true
-		go func(index int) {
-			action(slice[index])
-			<-token
-		}(i)
-	}
-	// 收回token，确保所有协程都已完成
-	for i := 0; i < n; i++ {
-		token <- true
-	}
-}
-
-// ForEachPtParal 对slice中的每个元素，通过其指针多线程并行执行action函数，适用于改写slice场景。
-// 参数n为并行协程数
-func ForEachPtParal[T interface{}](slice []T, n int, action func(e *T)) {
+func ForEachParal[T interface{}](slice []T, n int, action func(e *T)) {
 	if len(slice) <= 0 {
 		return
 	}
