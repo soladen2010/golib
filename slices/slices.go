@@ -11,7 +11,7 @@ func FindAll[T interface{}](slice []T, contdition func(T) bool) []T {
 	return result
 }
 
-// FindFirst 在slice中搜索第一个符合条件（condition函数返回true）的元素，返回元素的索引和元素值
+// FindFirst 在slice中搜索第一个符合条件（condition函数返回true）的元素，返回元素的索引和元素值，若未找到，返回-1和该型变量初始值
 func FindFirst[T interface{}](slice []T, contdition func(T) bool) (int, T) {
 	for i := 0; i < len(slice); i++ {
 		if contdition(slice[i]) {
@@ -22,7 +22,7 @@ func FindFirst[T interface{}](slice []T, contdition func(T) bool) (int, T) {
 	return -1, t
 }
 
-// FindLast 在slice中搜索最后一个符合条件（condition函数返回true）的元素，返回元素的索引和元素值
+// FindLast 在slice中搜索最后一个符合条件（condition函数返回true）的元素，返回元素的索引和元素值，若未找到，返回-1和该型变量初始值
 func FindLast[T interface{}](slice []T, contdition func(T) bool) (int, T) {
 	for i := len(slice) - 1; i >= 0; i-- {
 		if contdition(slice[i]) {
