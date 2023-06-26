@@ -114,8 +114,8 @@ func MapParal[T1 interface{}, T2 interface{}](slice []T1, n int, mapper func(T1)
 // Reduce 使用汇总函数将 []T1 切片汇总成一个结果。
 func Reduce[T1, T2 interface{}](s []T1, initializer T2, f func(T2, T1) T2) T2 {
 	r := initializer
-	for _, v := range s {
-		r = f(r, v)
+	for i := 0; i < len(s); i++ {
+		r = f(r, s[i])
 	}
 	return r
 }
@@ -124,9 +124,9 @@ func Reduce[T1, T2 interface{}](s []T1, initializer T2, f func(T2, T1) T2) T2 {
 // 该函数返回新的切片，只会保留调用 f 返回 true 的元素。
 func Filter[T interface{}](s []T, f func(T) bool) []T {
 	var r []T
-	for _, v := range s {
-		if f(v) {
-			r = append(r, v)
+	for i := 0; i < len(s); i++ {
+		if f(s[i]) {
+			r = append(r, s[i])
 		}
 	}
 	return r
@@ -136,17 +136,47 @@ func Filter[T interface{}](s []T, f func(T) bool) []T {
 func Reverse[T interface{}](s []T) []T {
 	var r []T
 	l := len(s)
-	for i := range s {
+	for i := 0; i < l; i++ {
 		r = append(r, s[l-1-i])
 	}
 	return r
 }
 
-// 统计数组中各元素出现的频次，并将结果记入map
+// GroupCount 统计数组中各元素出现的频次，并将结果记入map
 func GroupCount[T interface{}](s []T) map[interface{}]int {
 	gmap := make(map[interface{}]int)
 	for i := 0; i < len(s); i++ {
 		gmap[s[i]]++
 	}
 	return gmap
+}
+
+// Max 取slice中最大的元素，若slice为空，则返回该型变量初始值；smaller(a,b)表示a是否小于b，小于则返回true。
+func Max[T interface{}](slice []T, smaller func(T, T) bool) T {
+	if len(slice) == 0 {
+		var t T
+		return t
+	}
+	max := slice[0]
+	for i := 1; i < len(slice); i++ {
+		if smaller(max, slice[i]) {
+			max = slice[i]
+		}
+	}
+	return max
+}
+
+// Min 取slice中最小的元素，若slice为空，则返回该型变量初始值；smaller(a,b)表示a是否小于b，小于则返回true。
+func Min[T interface{}](slice []T, smaller func(T, T) bool) T {
+	if len(slice) == 0 {
+		var t T
+		return t
+	}
+	min := slice[0]
+	for i := 1; i < len(slice); i++ {
+		if smaller(slice[i], min) {
+			min = slice[i]
+		}
+	}
+	return min
 }
