@@ -70,10 +70,10 @@ func TestGroupCount(t *testing.T) {
 
 func TestFindLast(t *testing.T) {
 	arr := []User{{id: 1, name: "tom"}, {id: 2, name: "jack"}, {id: 3, name: "marry"}, {id: 2, name: "jackNew"}}
-	last := FindLast(arr, func(e User) bool {
+	index, last := FindLast(arr, func(e User) bool {
 		return e.id == 2
 	})
-	fmt.Println(last)
+	fmt.Println(index, last)
 }
 
 func TestFindAll(t *testing.T) {
@@ -84,11 +84,28 @@ func TestFindAll(t *testing.T) {
 	fmt.Println(all)
 }
 
-// create a test function for FindFirst
 func TestFindFirst(t *testing.T) {
 	arr := []User{{id: 1, name: "tom"}, {id: 2, name: "jack"}, {id: 3, name: "marry"}, {id: 2, name: "jackNew"}}
-	first := FindFirst(arr, func(e User) bool {
+	index, first := FindFirst(arr, func(e User) bool {
 		return e.id == 2
 	})
-	fmt.Println(first)
+	fmt.Println(index, first)
+}
+
+// func to test Max function
+func TestMax(t *testing.T) {
+	arr := []string{"a", "bb", "cccc", "dsdfadfadf", "eafsdfasdfqw3453efqwe"}
+	index, max := Max(arr, func(a, b string) bool {
+		return len(a) < len(b)
+	})
+	fmt.Println(index, max)
+}
+
+// func to test Min function
+func TestMin(t *testing.T) {
+	arr := []string{"a", "bb", "cccc", "dsdfadfadf", "eafsdfasdfqw3453efqwe"}
+	index, max := Min(arr, func(a, b string) bool {
+		return len(a) < len(b)
+	})
+	fmt.Println(index, max)
 }

@@ -11,26 +11,26 @@ func FindAll[T interface{}](slice []T, contdition func(T) bool) []T {
 	return result
 }
 
-// FindFirst 在slice中搜索第一个符合条件（condition函数返回true）的元素
-func FindFirst[T interface{}](slice []T, contdition func(T) bool) T {
-	for _, item := range slice {
-		if contdition(item) {
-			return item
+// FindFirst 在slice中搜索第一个符合条件（condition函数返回true）的元素，返回元素的索引和元素值
+func FindFirst[T interface{}](slice []T, contdition func(T) bool) (int, T) {
+	for i := 0; i < len(slice); i++ {
+		if contdition(slice[i]) {
+			return i, slice[i]
 		}
 	}
 	var t T
-	return t
+	return -1, t
 }
 
-// FindLast 在slice中搜索最后一个符合条件（condition函数返回true）的元素
-func FindLast[T interface{}](slice []T, contdition func(T) bool) T {
+// FindLast 在slice中搜索最后一个符合条件（condition函数返回true）的元素，返回元素的索引和元素值
+func FindLast[T interface{}](slice []T, contdition func(T) bool) (int, T) {
 	for i := len(slice) - 1; i >= 0; i-- {
 		if contdition(slice[i]) {
-			return slice[i]
+			return i, slice[i]
 		}
 	}
 	var t T
-	return t
+	return -1, t
 }
 
 // ForEach 对slice中的每个元素执行action函数，适用于读取slice场景。
@@ -151,32 +151,32 @@ func GroupCount[T interface{}](s []T) map[interface{}]int {
 	return gmap
 }
 
-// Max 取slice中最大的元素，若slice为空，则返回该型变量初始值；smaller(a,b)表示a是否小于b，小于则返回true。
-func Max[T interface{}](slice []T, smaller func(T, T) bool) T {
+// Max 取slice中最大的元素，返回元素的索引和元素值，若slice为空，则返回索引为-1；smaller(a,b)表示a是否小于b，小于则返回true。
+func Max[T interface{}](slice []T, smaller func(T, T) bool) (index int, max T) {
 	if len(slice) == 0 {
-		var t T
-		return t
+		return -1, max
 	}
-	max := slice[0]
+	max = slice[0]
 	for i := 1; i < len(slice); i++ {
 		if smaller(max, slice[i]) {
 			max = slice[i]
+			index = i
 		}
 	}
-	return max
+	return index, max
 }
 
-// Min 取slice中最小的元素，若slice为空，则返回该型变量初始值；smaller(a,b)表示a是否小于b，小于则返回true。
-func Min[T interface{}](slice []T, smaller func(T, T) bool) T {
+// Min 取slice中最小的元素，返回元素的索引和元素值，若slice为空，则返回索引为-1；smaller(a,b)表示a是否小于b，小于则返回true。
+func Min[T interface{}](slice []T, smaller func(T, T) bool) (index int, min T) {
 	if len(slice) == 0 {
-		var t T
-		return t
+		return -1, min
 	}
-	min := slice[0]
+	min = slice[0]
 	for i := 1; i < len(slice); i++ {
 		if smaller(slice[i], min) {
 			min = slice[i]
+			index = i
 		}
 	}
-	return min
+	return index, min
 }
